@@ -1,6 +1,6 @@
 usr/share/plymouth/themes/akatsuki/ usr/share/plymouth/themes/
 usr/share/grub/themes/akatsuki/ usr/share/grub/themes/
-usr/share/backgrounds/akatsuki/ usr/share/backgrounds/
+# usr/share/backgrounds/akatsuki/ usr/share/backgrounds/
 usr/share/gdm/vendor.conf etc/gdm3/
-usr/share/sounds/akatsuki/ usr/share/sounds/
+# usr/share/sounds/akatsuki/ usr/share/sounds/
 usr/share/akatsuki-welcome/akatsuki-welcome.desktop etc/xdg/autostart/
