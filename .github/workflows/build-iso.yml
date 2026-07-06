@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-packages:
     runs-on: ubuntu-latest
     
     steps:
@@ -17,7 +17,7 @@ jobs:
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y -qq --no-install-recommends \
-          live-build debootstrap reprepro dpkg-dev devscripts lintian \
+          reprepro dpkg-dev devscripts lintian \
           debhelper build-essential
           
     - name: Build Debian Packages
@@ -52,23 +52,51 @@ jobs:
           done
         fi
 
+    - name: Upload Built Packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: akatsuki-debs
+        path: |
+          build/debs/*.deb
+          build/apt-repo/
+        retention-days: 7
+
+  build-iso:
+    runs-on: ubuntu-latest
+    needs: build-packages
+    container:
+      image: debian:trixie
+      options: --privileged
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Build Dependencies
+      run: |
+        apt-get update -qq
+        apt-get install -y -qq --no-install-recommends \
+          live-build debootstrap ca-certificates \
+          git rsync wget curl
+
+    - name: Download Built Packages
+      uses: actions/download-artifact@v4
+      with:
+        name: akatsuki-debs
+        path: build/
+
     - name: Build Live ISO
       run: |
         mkdir -p build/iso
         cd live-config
         
         # Copy local packages to chroot include
-        if [ -d "../build/apt-repo/pool" ]; then
+        if [ -d "../build/debs" ]; then
           mkdir -p config/packages.chroot
-          find "../build/apt-repo/pool" -name "*.deb" -exec cp {} config/packages.chroot/ \;
+          find "../build/debs" -name "*.deb" -exec cp {} config/packages.chroot/ \;
         fi
         
-        # Make sure debootstrap knows about trixie
-        if [ ! -f /usr/share/debootstrap/scripts/trixie ]; then
-          sudo ln -s sid /usr/share/debootstrap/scripts/trixie
-        fi
-        
-        sudo lb config --distribution trixie --binary-images iso-hybrid \
+        lb config --distribution trixie --binary-images iso-hybrid \
           --archive-areas "main contrib non-free non-free-firmware" \
           --architectures amd64 \
           --linux-flavours amd64 \
@@ -88,17 +116,19 @@ jobs:
           --backports true \
           --cache-packages true
           
-        sudo lb build 2>&1 | tee build.log
+        lb build 2>&1 | tee build.log
         
         iso_file=$(ls -1 *.iso 2>/dev/null | head -1)
         if [ -n "$iso_file" ]; then
-          sudo cp "$iso_file" "../build/iso/"
+          cp "$iso_file" "../build/iso/"
           echo "ISO built: $iso_file"
+          echo "SHA256: $(sha256sum "$iso_file" | cut -d' ' -f1)"
         else
           echo "ERROR: ISO file not generated"
+          cat build.log | tail -100
           exit 1
         fi
-        sudo rm -rf config/packages.chroot
+        rm -rf config/packages.chroot
 
     - name: Upload ISO Artifact
       uses: actions/upload-artifact@v4
