@@ -1,0 +1,108 @@
+name: Akatsuki Linux Build Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq --no-install-recommends \
+          live-build debootstrap reprepro dpkg-dev devscripts lintian \
+          debhelper build-essential
+          
+    - name: Build Debian Packages
+      run: |
+        mkdir -p build/debs build/apt-repo
+        for pkg_dir in packages/*/; do
+          if [ -d "$pkg_dir/debian" ]; then
+            pkg_name=$(basename "$pkg_dir")
+            echo "Building package: $pkg_name"
+            cd "$pkg_dir"
+            dpkg-buildpackage -us -uc -b
+            cd ../../
+          fi
+        done
+        find . -maxdepth 2 -name "*.deb" -exec cp {} build/debs/ \;
+
+    - name: Setup Local APT Repository
+      run: |
+        if command -v reprepro &>/dev/null; then
+          mkdir -p build/apt-repo/conf
+          cat > build/apt-repo/conf/distributions << 'DISTRIB'
+        Origin: Akatsuki Linux
+        Label: Akatsuki Linux
+        Suite: trixie
+        Codename: trixie
+        Architectures: amd64 source
+        Components: main
+        Description: Akatsuki Linux APT Repository
+        DISTRIB
+          for deb in build/debs/*.deb; do
+            reprepro -b build/apt-repo includedeb trixie "$deb"
+          done
+        fi
+
+    - name: Build Live ISO
+      run: |
+        mkdir -p build/iso
+        cd live-config
+        
+        # Copy local packages to chroot include
+        if [ -d "../build/apt-repo/pool" ]; then
+          mkdir -p config/packages.chroot
+          find "../build/apt-repo/pool" -name "*.deb" -exec cp {} config/packages.chroot/ \;
+        fi
+        
+        # Make sure debootstrap knows about trixie
+        if [ ! -f /usr/share/debootstrap/scripts/trixie ]; then
+          sudo ln -s sid /usr/share/debootstrap/scripts/trixie
+        fi
+        
+        sudo lb config --distribution trixie --binary-images iso-hybrid \
+          --archive-areas "main contrib non-free non-free-firmware" \
+          --architectures amd64 \
+          --linux-flavours amd64 \
+          --bootappend-live "boot=live components splash quiet loglevel=3" \
+          --debian-installer live \
+          --debian-installer-gui true \
+          --iso-application "Akatsuki Linux 1.0" \
+          --iso-preparer "Akatsuki Linux Team" \
+          --iso-publisher "Akatsuki Linux" \
+          --iso-volume "Akatsuki-Linux-1.0" \
+          --firmware-binary true \
+          --firmware-chroot true \
+          --memtest none \
+          --apt-recommends false \
+          --updates true \
+          --security true \
+          --backports true \
+          --cache-packages true
+          
+        sudo lb build 2>&1 | tee build.log
+        
+        iso_file=$(ls -1 *.iso 2>/dev/null | head -1)
+        if [ -n "$iso_file" ]; then
+          sudo cp "$iso_file" "../build/iso/"
+          echo "ISO built: $iso_file"
+        else
+          echo "ERROR: ISO file not generated"
+          exit 1
+        fi
+        sudo rm -rf config/packages.chroot
+
+    - name: Upload ISO Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Akatsuki-Linux-ISO
+        path: build/iso/*.iso
+        retention-days: 7
