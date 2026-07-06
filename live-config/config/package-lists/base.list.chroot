@@ -12,6 +12,5 @@ firmware-realtek
 firmware-atheros
 firmware-brcm80211
 firmware-sof-signed
-firmware-intel-sound
 amd64-microcode
 intel-microcode

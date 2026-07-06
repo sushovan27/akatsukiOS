@@ -9,11 +9,7 @@ python3-opencv
 python3-pillow
 python3-jupyter-core
 jupyter-notebook
-jupyterlab
-ollama
-nvidia-cuda-toolkit
 docker.io
-docker-compose-v2
-qemu-kvm
+qemu-system-x86
 libvirt-daemon-system
 virt-manager

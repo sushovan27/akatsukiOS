@@ -1,13 +1,9 @@
 # Akatsuki Linux UI/Theme Packages
 gnome-core
 gnome-shell
-gnome-shell-extension-dash-to-dock
-gnome-shell-extension-blur-my-shell
-gnome-shell-extension-just-perfection
-gnome-shell-extension-caffeine
+gnome-shell-extension-dashtodock
+gnome-shell-extension-appindicator
 gnome-shell-extension-user-theme
-gnome-shell-extension-arc-menu
-gnome-shell-extension-vitals
 gnome-tweaks
 gnome-control-center
 nautilus
@@ -25,19 +21,10 @@ fonts-firacode
 fonts-font-awesome
 fonts-roboto
 papirus-icon-theme
-bibata-cursor-theme
-colloid-gtk-theme
-colloid-icon-theme
-sweet-gtk-theme
-orchis-gtk-theme
-yaru-theme-gnome-shell
 adwaita-icon-theme
 dmz-cursor-theme
 breeze-cursor-theme
-qt5-style-plugins
-qt5-gtk2-platformtheme
 qt6-gtk-platformtheme
-qt5ct
 qt6ct
 dconf-cli
 dconf-editor

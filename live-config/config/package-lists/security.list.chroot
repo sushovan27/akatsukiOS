@@ -9,7 +9,6 @@ apparmor-utils
 unattended-upgrades
 clamav
 clamav-daemon
-freshclam
 rkhunter
 lynis
 tiger

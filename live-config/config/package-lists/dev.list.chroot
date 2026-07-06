@@ -29,10 +29,9 @@ tig
 sqlite3
 sqlitebrowser
 postgresql-client
-mysql-client
+default-mysql-client
 redis-tools
 docker.io
-docker-compose-v2
-qemu-kvm
+qemu-system-x86
 libvirt-daemon-system
 virt-manager
