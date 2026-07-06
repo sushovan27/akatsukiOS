@@ -89,7 +89,12 @@ jobs:
       run: |
         mkdir -p build/iso
         cd live-config
-        
+
+        # Ensure live-build auto scripts are executable
+        [ -f auto/build ] && chmod +x auto/build
+        [ -f auto/config ] && chmod +x auto/config
+        [ -f auto/clean ] && chmod +x auto/clean
+
         # Copy local packages to chroot include
         if [ -d "../build/debs" ]; then
           mkdir -p config/packages.chroot
@@ -125,7 +130,8 @@ jobs:
           echo "SHA256: $(sha256sum "$iso_file" | cut -d' ' -f1)"
         else
           echo "ERROR: ISO file not generated"
-          cat build.log | tail -100
+          grep -nE "E: |Err:|ERROR|failed" build.log | tail -200 || true
+          tail -300 build.log
           exit 1
         fi
         rm -rf config/packages.chroot
