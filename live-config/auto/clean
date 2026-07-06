@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}"
+export SOURCE_DATE_EPOCH
+
+lb clean --purge "${@}"
+rm -rf config/binary config/chroot config/common config/bootstrap config/source

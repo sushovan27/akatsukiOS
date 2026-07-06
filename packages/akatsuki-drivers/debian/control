@@ -1,0 +1,57 @@
+Source: akatsuki-drivers
+Section: metapackages
+Priority: optional
+Maintainer: Akatsuki Linux Team <devel@akatsukilinux.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: akatsuki-drivers
+Architecture: all
+Depends: mesa-utils,
+         mesa-va-drivers,
+         mesa-vulkan-drivers,
+         libgl1-mesa-dri,
+         libgl1-mesa-glx,
+         libegl1-mesa,
+         libegl1-mesa-drivers,
+         libgles2-mesa,
+         libva-drm2,
+         libva-x11-2,
+         va-driver-all,
+         i965-va-driver,
+         intel-media-va-driver,
+         libmfx1,
+         firmware-linux,
+         firmware-linux-nonfree,
+         firmware-misc-nonfree,
+         firmware-amd-graphics,
+         firmware-iwlwifi,
+         firmware-realtek,
+         firmware-atheros,
+         firmware-brcm80211,
+         firmware-intelwimax,
+         firmware-intel-sound,
+         firmware-sof-signed,
+         xserver-xorg-video-intel,
+         xserver-xorg-video-amdgpu,
+         xserver-xorg-video-ati,
+         xserver-xorg-video-nouveau,
+         libdrm-amdgpu1,
+         libdrm-intel1,
+         libdrm-nouveau2,
+         libdrm-radeon1,
+         pciutils,
+         usbutils,
+         inxi
+Suggests: nvidia-driver,
+          nvidia-cuda-toolkit,
+          nvidia-settings,
+          nvidia-xconfig,
+          nvidia-persistenced,
+          nvidia-prime,
+          libnvidia-egl-wayland1
+Description: Akatsuki Linux hardware drivers metapackage
+ Installs open-source GPU drivers, firmware blobs, and
+ hardware support packages. Suggests NVIDIA proprietary
+ drivers which can be installed post-deployment.

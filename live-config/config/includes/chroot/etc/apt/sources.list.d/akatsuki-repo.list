@@ -1,0 +1,9 @@
+# Akatsuki Linux Official Repository
+deb [signed-by=/usr/share/keyrings/akatsuki-archive-keyring.gpg] http://repo.akatsukilinux.org/debian trixie main contrib non-free non-free-firmware
+deb-src [signed-by=/usr/share/keyrings/akatsuki-archive-keyring.gpg] http://repo.akatsukilinux.org/debian trixie main contrib non-free non-free-firmware
+
+# Akatsuki Backports
+deb [signed-by=/usr/share/keyrings/akatsuki-archive-keyring.gpg] http://repo.akatsukilinux.org/debian trixie-backports main contrib non-free non-free-firmware
+
+# Akatsuki Security Updates
+deb [signed-by=/usr/share/keyrings/akatsuki-archive-keyring.gpg] http://repo.akatsukilinux.org/debian-security trixie-security main contrib non-free non-free-firmware

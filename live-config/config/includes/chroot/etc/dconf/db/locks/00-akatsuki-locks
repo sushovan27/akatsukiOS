@@ -1,0 +1,12 @@
+# Lock Akatsuki default settings
+/org/gnome/desktop/interface/gtk-theme
+/org/gnome/desktop/interface/icon-theme
+/org/gnome/desktop/interface/cursor-theme
+/org/gnome/desktop/interface/font-name
+/org/gnome/desktop/interface/color-scheme
+/org/gnome/desktop/wm/preferences/button-layout
+/org/gnome/desktop/background/picture-uri
+/org/gnome/desktop/background/picture-uri-dark
+/org/gnome/shell/enabled-extensions
+/org/gnome/shell/favorite-apps
+/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c89796b3b2b5/visible-name

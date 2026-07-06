@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Akatsuki Welcome
+Comment=Welcome to Akatsuki Linux
+Exec=/usr/local/bin/akatsuki-firstboot.sh
+Icon=akatsuki-logo
+Terminal=false
+Categories=System;Setup;
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel
+NoDisplay=true

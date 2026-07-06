@@ -1,0 +1,28 @@
+#!/bin/bash
+# Akatsuki Linux dconf Setup Hook
+# Applies GNOME dconf settings from local database
+
+set -e
+
+echo "Applying Akatsuki Linux dconf settings..."
+
+# Create dconf database directory
+mkdir -p /etc/dconf/db/local.d
+mkdir -p /etc/dconf/db/locks
+mkdir -p /etc/dconf/profile
+
+# Create dconf profile
+cat > /etc/dconf/profile/user << 'PROFILE'
+user-db:user
+system-db:local
+PROFILE
+
+# Update dconf database
+if command -v dconf update &>/dev/null; then
+    dconf update
+    echo "dconf database updated successfully."
+else
+    echo "dconf not found - database will be updated on first boot."
+fi
+
+echo "dconf setup complete."

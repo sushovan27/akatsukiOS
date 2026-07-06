@@ -1,0 +1,59 @@
+Source: akatsuki-theme
+Section: gnome
+Priority: optional
+Maintainer: Akatsuki Linux Team <devel@akatsukilinux.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: akatsuki-theme
+Architecture: all
+Depends: plymouth,
+         plymouth-label,
+         grub2-common,
+         grub-pc-bin,
+         grub-efi-amd64-bin,
+         grub-efi-amd64-signed,
+         shim-signed,
+         gdm3,
+         gnome-shell,
+         gnome-shell-common,
+         gnome-shell-extension-user-theme,
+         gnome-themes-extra,
+         gtk2-engines-murrine,
+         gtk2-engines-pixbuf,
+         libgtk-3-0,
+         libgtk-3-bin,
+         libgtk-3-dev,
+         fonts-jetbrains-mono,
+         fonts-noto,
+         fonts-noto-cjk,
+         fonts-font-awesome,
+         fonts-roboto,
+         fonts-ubuntu,
+         fonts-firacode,
+         fonts-nanum,
+         papirus-icon-theme,
+         bibata-cursor-theme,
+         colloid-gtk-theme,
+         colloid-icon-theme,
+         sweet-gtk-theme,
+         orchis-gtk-theme,
+         yaru-theme-gnome-shell,
+         adwaita-icon-theme,
+         dmz-cursor-theme,
+         breeze-cursor-theme,
+         sound-theme-freedesktop,
+         libcanberra-pulse,
+         libcanberra-gtk3-module,
+         plymouth-themes,
+         dconf-cli,
+         dconf-editor,
+         gsettings-desktop-schemas,
+         desktop-base,
+         calamares,
+         calamares-settings-debian
+Description: Akatsuki Linux theme package
+ Contains Plymouth boot splash, GRUB theme, GDM login theme,
+ GNOME Shell and GTK themes, wallpapers, cursors, icons, fonts,
+ sound effects, and welcome screen for Akatsuki Linux.

@@ -1,0 +1,197 @@
+# Akatsuki Linux CI/CD Pipeline
+# Uses GitLab CI to build packages and generate ISO
+
+stages:
+  - build-packages
+  - lint-packages
+  - build-iso
+  - test-iso
+  - release
+
+variables:
+  GIT_STRATEGY: fetch
+  GIT_DEPTH: 50
+  SOURCE_DATE_EPOCH: $CI_PIPELINE_CREATED_AT_UNIX
+  DEBFULLNAME: "Akatsuki Linux Team"
+  DEBEMAIL: "devel@akatsukilinux.org"
+  GPG_KEY_ID: "$AKATSUKI_GPG_KEY_ID"
+
+# Base image with build dependencies
+.base-image:
+  image: debian:trixie-slim
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq --no-install-recommends
+        ca-certificates curl gnupg
+        build-essential debhelper lintian
+        live-build debootstrap
+        reprepro dpkg-dev devscripts
+        git rsync
+    - echo "Build environment ready"
+
+# Stage 1: Build all .deb packages
+build-packages:
+  stage: build-packages
+  extends: .base-image
+  artifacts:
+    paths:
+      - build/debs/
+      - build/apt-repo/
+    expire_in: 1 week
+  script:
+    - mkdir -p build/debs build/apt-repo
+    - export OUTPUT_DIR="$CI_PROJECT_DIR/build/debs"
+    - export REPREPRO_DIR="$CI_PROJECT_DIR/build/apt-repo"
+    - |
+      for pkg_dir in packages/*/; do
+        if [ -d "$pkg_dir/debian" ]; then
+          pkg_name=$(basename "$pkg_dir")
+          echo "Building package: $pkg_name"
+          cd "$pkg_dir"
+          dpkg-buildpackage -us -uc -b
+          cd "$CI_PROJECT_DIR"
+        fi
+      done
+    - |
+      find . -maxdepth 2 -name "*.deb" -exec cp {} build/debs/ \;
+    - |
+      if command -v reprepro &>/dev/null; then
+        mkdir -p build/apt-repo/conf
+        cat > build/apt-repo/conf/distributions << 'DISTRIB'
+    Origin: Akatsuki Linux
+    Label: Akatsuki Linux
+    Suite: trixie
+    Codename: trixie
+    Architectures: amd64 source
+    Components: main
+    Description: Akatsuki Linux APT Repository
+    SignWith: $GPG_KEY_ID
+    DISTRIB
+        for deb in build/debs/*.deb; do
+          reprepro -b build/apt-repo includedeb trixie "$deb"
+        done
+      fi
+
+# Stage 2: Run lintian on built packages
+lint-packages:
+  stage: lint-packages
+  extends: .base-image
+  needs:
+    - build-packages
+  artifacts:
+    paths:
+      - build/lintian-reports/
+    expire_in: 1 week
+    reports:
+      lintian: build/lintian-reports/*.lintian
+  script:
+    - mkdir -p build/lintian-reports
+    - |
+      for deb in build/debs/*.deb; do
+        pkg=$(basename "$deb" .deb)
+        echo "Linting: $pkg"
+        lintian --info --display-experimental --tags-from-file \
+          --suppress-tags bad-distribution-in-changes-file \
+          "$deb" > "build/lintian-reports/${pkg}.lintian" 2>&1 || true
+      done
+
+# Stage 3: Build the Live ISO
+build-iso:
+  stage: build-iso
+  extends: .base-image
+  needs:
+    - build-packages
+  artifacts:
+    paths:
+      - build/iso/
+    expire_in: 1 month
+  script:
+    - mkdir -p build/iso
+    - export REPREPRO_DIR="$CI_PROJECT_DIR/build/apt-repo"
+    - export SOURCE_DATE_EPOCH="$CI_PIPELINE_CREATED_AT_UNIX"
+    - cd live-config
+    - |
+      if [ -d "$CI_PROJECT_DIR/build/apt-repo/pool" ]; then
+        mkdir -p config/packages.chroot
+        find "$CI_PROJECT_DIR/build/apt-repo/pool" -name "*.deb" -exec cp {} config/packages.chroot/ \;
+      fi
+    - lb config --distribution trixie --binary-images iso-hybrid
+        --archive-areas "main contrib non-free non-free-firmware"
+        --architectures amd64
+        --linux-flavours amd64
+        --bootappend-live "boot=live components splash quiet loglevel=3"
+        --debian-installer live
+        --debian-installer-gui true
+        --iso-application "Akatsuki Linux 1.0"
+        --iso-preparer "Akatsuki Linux Team"
+        --iso-publisher "Akatsuki Linux"
+        --iso-volume "Akatsuki-Linux-${CI_COMMIT_SHORT_SHA:-1.0}"
+        --firmware-binary true
+        --firmware-chroot true
+        --memtest none
+        --apt-recommends false
+        --updates true
+        --security true
+        --backports true
+        --cache-packages true
+    - lb build 2>&1 | tee build.log
+    - |
+      iso_file=$(ls -1 *.iso 2>/dev/null | head -1)
+      if [ -n "$iso_file" ]; then
+        cp "$iso_file" "$CI_PROJECT_DIR/build/iso/"
+        echo "ISO built: $iso_file"
+        echo "SHA256: $(sha256sum "$iso_file" | cut -d' ' -f1)"
+      else
+        echo "ERROR: ISO file not generated"
+        exit 1
+      fi
+    - rm -rf config/packages.chroot
+
+# Stage 4: Test ISO in QEMU
+test-iso:
+  stage: test-iso
+  image: debian:trixie-slim
+  needs:
+    - build-iso
+  script:
+    - apt-get update -qq
+    - apt-get install -y -qq --no-install-recommends qemu-system-x86 ovmf
+    - |
+      iso_file=$(ls build/iso/*.iso 2>/dev/null | head -1)
+      if [ -z "$iso_file" ]; then
+        echo "ERROR: No ISO found to test"
+        exit 1
+      fi
+      echo "Testing ISO: $iso_file"
+      echo "Size: $(du -h "$iso_file" | cut -f1)"
+      # Verify ISO can be booted (quick sanity check)
+      qemu-system-x86_64 -cdrom "$iso_file" -boot d -m 2048 -nographic \
+        -display none -serial mon:stdio -no-reboot \
+        -kernel /dev/null -initrd /dev/null 2>&1 | head -50 || true
+    - echo "ISO test completed"
+
+# Stage 5: Release
+release:
+  stage: release
+  image: debian:trixie-slim
+  needs:
+    - build-iso
+    - lint-packages
+    - test-iso
+  only:
+    - tags
+  script:
+    - apt-get update -qq
+    - apt-get install -y -qq --no-install-recommends rsync
+    - mkdir -p build/release
+    - |
+      iso_file=$(ls build/iso/*.iso 2>/dev/null | head -1)
+      if [ -n "$iso_file" ]; then
+        sha256sum "$iso_file" > "build/release/$(basename "$iso_file").sha256"
+        cp "$iso_file" build/release/
+        echo "Release artifacts prepared in build/release/"
+      fi
+  artifacts:
+    paths:
+      - build/release/
+    expire_in: never

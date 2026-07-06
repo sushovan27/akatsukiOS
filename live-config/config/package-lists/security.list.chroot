@@ -1,0 +1,15 @@
+# Akatsuki Linux Security Packages
+akatsuki-security
+ufw
+gufw
+fail2ban
+apparmor
+apparmor-profiles
+apparmor-utils
+unattended-upgrades
+clamav
+clamav-daemon
+freshclam
+rkhunter
+lynis
+tiger

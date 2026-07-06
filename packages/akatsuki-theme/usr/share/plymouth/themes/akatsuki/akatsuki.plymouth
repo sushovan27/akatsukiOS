@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Akatsuki
+Description=Akatsuki Linux Neon Cyberpunk Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/akatsuki
+ScriptFile=/usr/share/plymouth/themes/akatsuki/akatsuki.script

@@ -1,0 +1,25 @@
+// Akatsuki Linux APT Configuration
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+APT::Get::AutomaticRemove "true";
+APT::Get::Purge "true";
+APT::Get::Show-Upgraded "true";
+APT::Cache-Limit "100000000";
+Acquire::Retries "3";
+Acquire::Languages "none";
+Acquire::http::Pipeline-Depth "10";
+Acquire::http::Timeout "10";
+Acquire::https::Timeout "10";
+Acquire::ftp::Timeout "10";
+Acquire::ForceIPv4 "true";
+Dpkg::Options {
+    "--force-confnew";
+    "--force-overwrite";
+};
+Unattended-Upgrade::Allowed-Origins {
+    "${distro_id}:${distro_codename}-security";
+    "${distro_id}:${distro_codename}-updates";
+};
+Unattended-Upgrade::Automatic-Reboot "false";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";

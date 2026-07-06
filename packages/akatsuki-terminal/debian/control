@@ -1,0 +1,33 @@
+Source: akatsuki-terminal
+Section: x11
+Priority: optional
+Maintainer: Akatsuki Linux Team <devel@akatsukilinux.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: akatsuki-terminal
+Architecture: all
+Depends: kitty,
+         zsh,
+         zsh-common,
+         zsh-autosuggestions,
+         zsh-syntax-highlighting,
+         zsh-completions,
+         fzf,
+         ripgrep,
+         bat,
+         exa,
+         fd-find,
+         zoxide,
+         tmux,
+         neovim,
+         vim,
+         nano,
+         python3-pip,
+         python3-pynvim,
+         nodejs,
+         npm
+Description: Akatsuki Linux terminal setup package
+ Configured terminal environment with Kitty, Zsh, Oh-My-Zsh,
+ Powerlevel10k theme, development fonts, and CLI enhancements.

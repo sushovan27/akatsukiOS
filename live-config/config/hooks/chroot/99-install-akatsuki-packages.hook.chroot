@@ -1,0 +1,39 @@
+#!/bin/bash
+# Akatsuki Linux Package Installation Hook
+# Installs locally built .deb packages from the local repository
+
+set -e
+
+echo "Installing Akatsuki Linux custom packages..."
+
+# Add the local repository if not already present
+if [ ! -f /etc/apt/sources.list.d/akatsuki-local.list ]; then
+    echo "deb [trusted=yes] file:/srv/apt-akatsuki trixie main" \
+        > /etc/apt/sources.list.d/akatsuki-local.list
+fi
+
+# Update package lists
+apt-get update -qq 2>/dev/null || true
+
+# Install Akatsuki metapackages
+apt-get install -y -qq \
+    akatsuki-base \
+    2>/dev/null || {
+    echo "Warning: akatsuki-base installation failed. Trying individual packages..."
+    apt-get install -y -qq \
+        akatsuki-theme \
+        akatsuki-terminal \
+        akatsuki-drivers \
+        2>/dev/null || true
+}
+
+# Install optional packages if available
+apt-get install -y -qq \
+    akatsuki-security \
+    akatsuki-ai \
+    2>/dev/null || true
+
+# Cleanup
+apt-get clean
+
+echo "Akatsuki package installation complete."

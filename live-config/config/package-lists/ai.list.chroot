@@ -1,0 +1,19 @@
+# Akatsuki Linux AI/ML Packages
+akatsuki-ai
+python3-numpy
+python3-pandas
+python3-scipy
+python3-matplotlib
+python3-sklearn
+python3-opencv
+python3-pillow
+python3-jupyter-core
+jupyter-notebook
+jupyterlab
+ollama
+nvidia-cuda-toolkit
+docker.io
+docker-compose-v2
+qemu-kvm
+libvirt-daemon-system
+virt-manager

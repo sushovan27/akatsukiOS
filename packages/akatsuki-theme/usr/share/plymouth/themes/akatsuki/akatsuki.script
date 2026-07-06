@@ -1,0 +1,35 @@
+Window.SetBackgroundTopColor(0.06, 0.02, 0.10);
+Window.SetBackgroundBottomColor(0.06, 0.02, 0.10);
+
+fun message_callback (message) {
+}
+
+fun quit_callback () {
+}
+
+fun refresh_callback () {
+    foreach i in bullets {
+        i.SetImage (i.image);
+    }
+}
+
+bullets[0] = Sprite();
+bullets[0].image = Image("box.png");
+bullets[0].SetX(Window.GetWidth() / 2 - 40 - 80);
+bullets[0].SetY(Window.GetHeight() / 2 + 60);
+bullets[0].SetZ(100);
+bullets[0].SetOpacity(0.9);
+
+bullets[1] = Sprite();
+bullets[1].image = Image("bullet.png");
+bullets[1].SetX(Window.GetWidth() / 2 - 40);
+bullets[1].SetY(Window.GetHeight() / 2 + 60);
+bullets[1].SetZ(100);
+bullets[1].SetOpacity(0.9);
+
+bullets[2] = Sprite();
+bullets[2].image = Image("entry.png");
+bullets[2].SetX(Window.GetWidth() / 2 - 40 + 80);
+bullets[2].SetY(Window.GetHeight() / 2 + 60);
+bullets[2].SetZ(100);
+bullets[2].SetOpacity(0.9);

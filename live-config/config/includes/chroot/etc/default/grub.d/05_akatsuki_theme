@@ -1,0 +1,18 @@
+# Akatsuki Linux GRUB Theme Configuration
+GRUB_THEME="/usr/share/grub/themes/akatsuki/theme.txt"
+GRUB_BACKGROUND="/usr/share/grub/themes/akatsuki/background.png"
+GRUB_TIMEOUT=3
+GRUB_TIMEOUT_STYLE=menu
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT_QUIET=true
+GRUB_GFXMODE=1920x1080,1600x900,1366x768,1280x720,1024x768,auto
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_DISTRIBUTOR="Akatsuki Linux"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1"
+GRUB_CMDLINE_LINUX="random.trust_cpu=on intel_iommu=on iommu=pt"
+GRUB_TERMINAL_OUTPUT=gfxterm
+GRUB_FONT_PATH=/boot/grub/fonts/JetBrainsMonoBold18.pf2
+GRUB_DISABLE_OS_PROBER=false
+GRUB_DISABLE_RECOVERY=true
+GRUB_RECORDFAIL_TIMEOUT=3
+GRUB_INIT_TUNE="480 440 1 0 523 1 0 587 1 0 659 1 0 698 2"

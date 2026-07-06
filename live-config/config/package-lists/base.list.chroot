@@ -1,0 +1,17 @@
+# Akatsuki Linux Base Packages
+akatsuki-base
+akatsuki-theme
+akatsuki-terminal
+akatsuki-drivers
+firmware-linux
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-amd-graphics
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-brcm80211
+firmware-sof-signed
+firmware-intel-sound
+amd64-microcode
+intel-microcode

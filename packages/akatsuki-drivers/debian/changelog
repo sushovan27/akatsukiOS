@@ -1,0 +1,5 @@
+akatsuki-drivers (1.0.0-1) trixie; urgency=medium
+
+  * Initial release of Akatsuki Linux hardware drivers metapackage.
+
+ -- Akatsuki Linux Team <devel@akatsukilinux.org>  Mon, 06 Jul 2026 20:00:00 +0000

@@ -1,0 +1,25 @@
+# Akatsuki Linux Network Packages
+network-manager
+network-manager-gnome
+modemmanager
+wireless-tools
+wpasupplicant
+rfkill
+bluez
+blueman
+cups
+cups-bsd
+cups-client
+avahi-daemon
+openssh-server
+openssh-client
+netcat-openbsd
+tcpdump
+nmap
+iperf3
+ethtool
+whois
+dnsutils
+curl
+wget
+rsync

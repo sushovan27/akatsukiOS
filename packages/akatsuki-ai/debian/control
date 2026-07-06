@@ -1,0 +1,46 @@
+Source: akatsuki-ai
+Section: metapackages
+Priority: optional
+Maintainer: Akatsuki Linux Team <devel@akatsukilinux.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: akatsuki-ai
+Architecture: all
+Depends: python3,
+         python3-pip,
+         python3-venv,
+         python3-numpy,
+         python3-pandas,
+         python3-scipy,
+         python3-matplotlib,
+         python3-sklearn,
+         python3-opencv,
+         python3-pillow,
+         python3-requests,
+         python3-torch | python3-torch-cuda,
+         python3-tensorflow,
+         python3-transformers,
+         python3-diffusers,
+         python3-datasets,
+         python3-accelerate,
+         python3-sentencepiece,
+         python3-tokenizers,
+         python3-jupyter-core,
+         jupyter-notebook,
+         jupyterlab,
+         ollama,
+         nvidia-cuda-toolkit,
+         nvidia-cuda-toolkit-gcc,
+         nvidia-cudnn,
+         nvidia-container-toolkit,
+         docker.io,
+         docker-compose-v2,
+         qemu-kvm,
+         libvirt-daemon-system,
+         virt-manager
+Description: Akatsuki Linux AI/ML metapackage
+ Includes AI/ML frameworks (PyTorch, TensorFlow), Jupyter,
+ Ollama, CUDA toolkit, and containerization tools for
+ data science and machine learning workloads.

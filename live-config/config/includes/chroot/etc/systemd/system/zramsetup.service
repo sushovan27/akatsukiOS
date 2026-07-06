@@ -1,0 +1,12 @@
+[Unit]
+Description=Akatsuki zRAM Swap Setup
+Documentation=https://wiki.debian.org/ZRam
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/akatsuki-zram-setup.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
