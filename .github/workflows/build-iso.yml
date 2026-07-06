@@ -91,9 +91,10 @@ jobs:
         cd live-config
 
         # Ensure live-build auto scripts are executable
-        [ -f auto/build ] && chmod +x auto/build
-        [ -f auto/config ] && chmod +x auto/config
-        [ -f auto/clean ] && chmod +x auto/clean
+        if [ -d auto ]; then
+          find auto -type f -exec chmod +x {} \;
+        fi
+        test -x auto/build || { echo "FATAL: auto/build must be executable"; ls -la auto/; exit 1; }
 
         # Copy local packages to chroot include
         if [ -d "../build/debs" ]; then
