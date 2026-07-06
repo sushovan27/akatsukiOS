@@ -29,7 +29,4 @@ lb config noauto \
     --updates true \
     --security true \
     --backports true \
-    --efi-secure-file /usr/lib/shim/shimx64.efi.signed.latest \
-    --efi-file /usr/lib/grub/x86_64-efi/grubx64.efi.signed \
-    --grub-installer security \
     "${@}"
