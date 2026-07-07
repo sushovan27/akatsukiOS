@@ -1,0 +1,18 @@
+# GDM greeter dconf defaults for Akatsuki
+[org/gnome/desktop/interface]
+gtk-theme='Akatsuki-Dark'
+icon-theme='Colloid-Dark'
+cursor-theme='Bibata-Modern-Ice'
+font-name='JetBrains Mono Regular 11'
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/akatsuki/login-wallpaper.jpg'
+
+[org/gnome/login-screen]
+logo='/usr/share/backgrounds/akatsuki/login-wallpaper.jpg'
+disable-user-list=false
+enable-always-smartcard-auth=false
+enable-full-search=false
+enable-password-auth=true
+enable-smartcard-auth=false
+enable-fingerprint-auth=false

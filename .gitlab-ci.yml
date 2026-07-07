@@ -119,6 +119,8 @@ build-iso:
         --archive-areas "main contrib non-free non-free-firmware"
         --architectures amd64
         --linux-flavours amd64
+        --username "user"
+        --user-password ""
         --bootappend-live "boot=live components splash quiet loglevel=3"
         --debian-installer live
         --debian-installer-gui true

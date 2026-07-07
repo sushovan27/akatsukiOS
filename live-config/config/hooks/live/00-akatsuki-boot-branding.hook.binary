@@ -1,0 +1,58 @@
+#!/bin/bash
+# Akatsuki Linux Boot Branding Hook
+# Runs during binary stage to patch GRUB/syslinux configs
+
+set -e
+
+echo "Applying Akatsuki branding to bootloader configs..."
+
+# Patch GRUB config - replace all "Debian" references
+GRUB_CFG="binary/boot/grub/grub.cfg"
+if [ -f "$GRUB_CFG" ]; then
+    sed -i \
+        -e 's/Debian GNU\/Linux/Akatsuki Linux/g' \
+        -e 's/"Debian"/"Akatsuki"/g' \
+        -e 's/debian/akatsuki/g' \
+        "$GRUB_CFG"
+    echo "Patched: $GRUB_CFG"
+fi
+
+# Patch all GRUB configs recursively
+for f in $(find binary/boot/grub -name "*.cfg" -o -name "*.conf" 2>/dev/null); do
+    sed -i \
+        -e 's/Debian GNU\/Linux/Akatsuki Linux/g' \
+        -e 's/"Debian"/"Akatsuki"/g' \
+        "$f" 2>/dev/null || true
+done
+echo "All GRUB configs branded."
+
+# Patch syslinux/isolinux configs
+for f in binary/isolinux/isolinux.cfg binary/isolinux/txt.cfg \
+          binary/isolinux/gtk.cfg binary/syslinux/syslinux.cfg; do
+    if [ -f "$f" ]; then
+        sed -i \
+            -e 's/Debian GNU\/Linux/Akatsuki Linux/g' \
+            -e 's/debian/akatsuki/g' \
+            "$f" 2>/dev/null || true
+        echo "Patched: $f"
+    fi
+done
+
+# Copy Akatsuki GRUB theme to the ISO boot directory if available
+THEME_SRC="chroot/usr/share/grub/themes/akatsuki"
+THEME_DST="binary/boot/grub/themes/akatsuki"
+if [ -d "$THEME_SRC" ]; then
+    mkdir -p "$THEME_DST"
+    cp -r "$THEME_SRC"/* "$THEME_DST/" 2>/dev/null || true
+    echo "Copied GRUB theme to ISO boot directory."
+fi
+
+# Debian desktop-base GRUB background
+for bg in binary/usr/share/images/desktop-base/desktop-grub.png \
+          binary/usr/share/desktop-base/grub-background.png; do
+    if [ -f "$bg" ]; then
+        rm -f "$bg" 2>/dev/null || true
+    fi
+done
+
+echo "Boot branding complete."

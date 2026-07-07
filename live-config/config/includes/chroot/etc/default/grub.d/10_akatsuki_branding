@@ -1,0 +1,12 @@
+# Akatsuki Linux GRUB Branding Override
+# This runs after Debian defaults to ensure our branding is applied
+
+GRUB_DISTRIBUTOR="Akatsuki Linux"
+GRUB_RECORDFAIL_TIMEOUT=3
+
+# Disable Debian default splash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3"
+
+# Remove Debian's hidden timeout behavior
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_TIMEOUT_STYLE=menu

@@ -1,0 +1,42 @@
+#!/bin/bash
+# Akatsuki Linux GRUB Configuration Hook
+# Runs in the chroot to apply branding and theme
+
+set -e
+
+echo "Configuring GRUB for Akatsuki Linux..."
+
+# Create theme directories
+mkdir -p /boot/grub/themes/akatsuki
+mkdir -p /boot/grub/fonts
+
+# If theme exists in /usr/share, copy to /boot for GRUB accessibility
+if [ -d /usr/share/grub/themes/akatsuki ]; then
+    cp -r /usr/share/grub/themes/akatsuki/* /boot/grub/themes/akatsuki/ 2>/dev/null || true
+fi
+
+# Create GRUB font from JetBrains Mono if available
+if command -v grub-mkfont &>/dev/null; then
+    for font in /usr/share/fonts/truetype/jetbrains/JetBrainsMono-Bold.ttf \
+                /usr/share/fonts/truetype/jetbrains/JetBrainsMono-Regular.ttf; do
+        if [ -f "$font" ]; then
+            font_name=$(basename "$font" .ttf)
+            grub-mkfont -s 18 -o "/boot/grub/fonts/${font_name}18.pf2" "$font" 2>/dev/null || true
+        fi
+    done
+fi
+
+# Remove Debian default GRUB background if it exists
+for f in /usr/share/images/desktop-base/desktop-grub.png \
+         /usr/share/desktop-base/grub-background.png; do
+    if [ -f "$f" ]; then
+        rm -f "$f" 2>/dev/null || true
+    fi
+done
+
+# Update GRUB configuration
+if [ -f /etc/default/grub ]; then
+    update-grub 2>/dev/null || true
+fi
+
+echo "GRUB branding complete."
