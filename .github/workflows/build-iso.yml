@@ -114,7 +114,8 @@ jobs:
           --updates true \
           --security true \
           --backports true \
-          --cache-packages true
+          --cache-packages true \
+          --grub-splash config/splash.png
           
         lb build 2>&1 | tee build.log
         
